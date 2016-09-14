@@ -14,4 +14,9 @@ public enum RequestMethod {
     PUT,
     DELETE;
 
+    @Override
+    public String toString() {
+        return this.name();
+    }
+
 }

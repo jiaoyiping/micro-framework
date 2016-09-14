@@ -23,8 +23,7 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-//TODO 程序运行时如何根据包名和classpath获取该包下所有的class文件?
-public class ClassInitTemplate {
+public abstract class ClassInitTemplate {
     private static final Logger logger = LoggerFactory.getLogger(ClassInitTemplate.class);
 
     protected final String packageName;
@@ -85,11 +84,11 @@ public class ClassInitTemplate {
             if (StringUtils.isNotEmpty(packagePath)) {
                 subPackagePath = packagePath + "/" + subPackagePath;
             }
-            String subPackageNamem = file.getName();
+            String subPackageName = file.getName();
             if (StringUtils.isNotEmpty(packageName)) {
-                subPackageNamem = packageName + "." + subPackageNamem;
+                subPackageName = packageName + "." + subPackageName;
             }
-            loadClassFromDirectory(result, subPackagePath, subPackageNamem);
+            loadClassFromDirectory(result, subPackagePath, subPackageName);
 
 
         }
@@ -103,7 +102,13 @@ public class ClassInitTemplate {
      */
     private void doAddClass(Collection<Class<?>> classes, String className) {
         Class<?> clazz = ClassUtils.loadClass(className, false);
-        classes.add(clazz);
-        logger.debug("load class:" + className);
+        if (classCanBeAdd(clazz)) {
+            classes.add(clazz);
+            logger.debug("load class:" + className);
+        }
+
+
     }
+
+    protected abstract boolean classCanBeAdd(Class<?> clazz);
 }

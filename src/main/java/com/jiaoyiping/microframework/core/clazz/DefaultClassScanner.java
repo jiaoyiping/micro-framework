@@ -13,17 +13,34 @@ import java.util.Collection;
 
 public class DefaultClassScanner implements ClassScanner {
     @Override
-    public Collection<Class<?>> getClasses(String pkgName) {
-        return null;
+    public Collection<Class<?>> getClasses(String packageName) {
+        return new ClassInitTemplate(packageName) {
+            @Override
+            protected boolean classCanBeAdd(Class<?> clazz) {
+                String className = clazz.getName();
+                String classPackageName = className.substring(0, className.lastIndexOf("."));
+                return classPackageName.startsWith(packageName);
+            }
+        }.getClasses();
     }
 
     @Override
-    public Collection<Class<?>> getClassesBySuperClass(String pkgName, Class<?> superClass) {
-        return null;
+    public Collection<Class<?>> getClassesBySuperClass(String packageName, Class<?> superClass) {
+        return new ClassInitTemplate(packageName) {
+            @Override
+            protected boolean classCanBeAdd(Class<?> clazz) {
+                return superClass.isAssignableFrom(clazz) && !superClass.equals(clazz);
+            }
+        }.getClasses();
     }
 
     @Override
-    public Collection<Class<?>> getClassesByAnnotation(String pkgName, Class<? extends Annotation> annotationClass) {
-        return null;
+    public Collection<Class<?>> getClassesByAnnotation(String packageName, Class<? extends Annotation> annotationClass) {
+        return new ClassInitTemplate(packageName) {
+            @Override
+            protected boolean classCanBeAdd(Class<?> clazz) {
+                return clazz.isAnnotationPresent(annotationClass);
+            }
+        }.getClasses();
     }
 }

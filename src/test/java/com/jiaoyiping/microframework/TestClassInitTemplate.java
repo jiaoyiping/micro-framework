@@ -31,4 +31,9 @@ class TestTemplate extends ClassInitTemplate {
     protected TestTemplate(String packageName) {
         super(packageName);
     }
+
+    @Override
+    protected boolean classCanBeAdd(Class<?> clazz) {
+        return true;
+    }
 }
