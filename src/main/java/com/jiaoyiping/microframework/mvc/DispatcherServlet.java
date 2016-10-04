@@ -42,11 +42,13 @@ public class DispatcherServlet extends HttpServlet {
 
         if (CONTEXT_BASE.equals(path)) {
             req.getRequestDispatcher(CONTEXT_BASE).forward(req, resp);
+            return;
         }
 
         RequestHandler requestHandler = handlerMapping.getHandler(requestMethod, path);
         if (requestHandler == null) {
             WebUtils.sendError(404, "未找到对应的资源", resp);
+            return;
         }
         handlerInvoker.invoke(req, resp, requestHandler);
     }

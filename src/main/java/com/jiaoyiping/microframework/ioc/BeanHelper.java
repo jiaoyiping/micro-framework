@@ -9,6 +9,8 @@ package com.jiaoyiping.microframework.ioc;
  */
 
 import com.jiaoyiping.microframework.core.clazz.ClassHelper;
+import com.jiaoyiping.microframework.ioc.annotation.Bean;
+import com.jiaoyiping.microframework.ioc.annotation.Service;
 import com.jiaoyiping.microframework.mvc.HandlerInvoker;
 import com.jiaoyiping.microframework.mvc.HandlerMapping;
 import com.jiaoyiping.microframework.mvc.ViewResolver;
@@ -26,7 +28,15 @@ public class BeanHelper {
     static {
         Collection<Class<?>> classes = ClassHelper.getAllClasses();
         for (Class<?> clazz : classes) {
-            if (clazz.isAnnotationPresent(Controller.class) || clazz.isAssignableFrom(ViewResolver.class) || clazz.isAssignableFrom(HandlerMapping.class) || clazz.isAssignableFrom(HandlerInvoker.class)) {
+            if (clazz.isAnnotationPresent(Controller.class) ||
+                    clazz.isAnnotationPresent(Bean.class)||
+                    clazz.isAnnotationPresent(Service.class)||
+//                    clazz.isAnnotationPresent(Bean.class)||
+
+                    clazz.isAssignableFrom(ViewResolver.class) ||
+                    clazz.isAssignableFrom(HandlerMapping.class) ||
+                    clazz.isAssignableFrom(HandlerInvoker.class)
+                    ) {
                 Object instance = null;
                 try {
                     instance = clazz.newInstance();
