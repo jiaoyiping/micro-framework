@@ -1,6 +1,7 @@
 package com.jiaoyiping.microframework.core;
 
 import com.jiaoyiping.microframework.ioc.BeanHelper;
+import com.jiaoyiping.microframework.ioc.IOCHelper;
 import com.jiaoyiping.microframework.mvc.ActionUtils;
 import com.jiaoyiping.microframework.utils.ClassUtils;
 
@@ -37,10 +38,11 @@ public class ContextLoadListener implements ServletContextListener {
     private void init() {
         Class<?>[] classes = {
                 ActionUtils.class,
-                BeanHelper.class
+                BeanHelper.class,
+                IOCHelper.class
         };
-        for(Class<?> clazz : classes){
-            ClassUtils.loadClass(clazz.getName(),false);
+        for (Class<?> clazz : classes) {
+            ClassUtils.loadClass(clazz.getName(), true);
         }
 
     }

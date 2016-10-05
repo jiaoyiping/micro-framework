@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
   * Time: 22:58
   * To change this template use File | Settings | Editor | File and Code Templates
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AutoWaired {
-    String value();
+public @interface Autowired {
+//    String value();
 }

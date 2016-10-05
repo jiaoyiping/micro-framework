@@ -23,14 +23,12 @@ import java.util.Map;
 public class BeanHelper {
     private static Map<Class<?>, Object> beanMap = new HashMap<>();
 
-    //todo 20160912 目前只是创建了所有的Controller的实例
-    //正式实现IOC模块的时候会创建其他的类的实例
     static {
         Collection<Class<?>> classes = ClassHelper.getAllClasses();
         for (Class<?> clazz : classes) {
             if (clazz.isAnnotationPresent(Controller.class) ||
-                    clazz.isAnnotationPresent(Bean.class)||
-                    clazz.isAnnotationPresent(Service.class)||
+                    clazz.isAnnotationPresent(Bean.class) ||
+                    clazz.isAnnotationPresent(Service.class) ||
 //                    clazz.isAnnotationPresent(Bean.class)||
 
                     clazz.isAssignableFrom(ViewResolver.class) ||

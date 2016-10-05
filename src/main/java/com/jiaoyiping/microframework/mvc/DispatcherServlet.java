@@ -41,15 +41,19 @@ public class DispatcherServlet extends HttpServlet {
         //                 4.如何分离对静态资源的请求
 
         if (CONTEXT_BASE.equals(path)) {
-            req.getRequestDispatcher(CONTEXT_BASE).forward(req, resp);
-            return;
+           // req.getRequestDispatcher(CONTEXT_BASE).forward(req, resp);
+         //   resp.sendRedirect("/");
+        } else {
+            RequestHandler requestHandler = handlerMapping.getHandler(requestMethod, path);
+            if (requestHandler == null) {
+                WebUtils.sendError(404, "未找到对应的资源", resp);
+
+            } else {
+                handlerInvoker.invoke(req, resp, requestHandler);
+            }
+
         }
 
-        RequestHandler requestHandler = handlerMapping.getHandler(requestMethod, path);
-        if (requestHandler == null) {
-            WebUtils.sendError(404, "未找到对应的资源", resp);
-            return;
-        }
-        handlerInvoker.invoke(req, resp, requestHandler);
+
     }
 }
