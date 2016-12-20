@@ -20,6 +20,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //TODO 处理请求参数的映射的实现太简单,使用起来有一些限制,可以参考一下SpringMVC是怎么实现的
 public class DefaultHandlerInvoker implements HandlerInvoker {
@@ -48,9 +51,37 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
         return actionMethod.invoke(actionInstance, params.toArray());
     }
 
+    /**
+     * 填充请求参数列表,为反射调用做准备
+     * TODO 需要参考springMVC的实现方法
+     *
+     * @param request
+     * @param response
+     * @param requestHandler
+     * @return
+     */
     private Collection<Object> getRequestParams(HttpServletRequest request, HttpServletResponse response, RequestHandler requestHandler) {
         Collection<Object> params = new ArrayList();
-        Collection<Class<?>> requestTypes = Arrays.asList(requestHandler.getActionMethod().getParameterTypes());
+        List<Class<?>> requestTypes = Arrays.asList(requestHandler.getActionMethod().getParameterTypes());
+        Matcher matcher = requestHandler.getRequestPathPattern().matcher(request.getRequestURI());
+        for (int i = 0; i < requestTypes.size(); i++) {
+            Class<?> clazz = requestTypes.get(i);
+            if ("javax.servlet.http.HttpServletRequest".equals(clazz.getName())) {
+                params.add(request);
+            }
+            if ("javax.servlet.http.HttpServletResponse".equals(clazz.getName())) {
+                params.add(response);
+            }
+            if (matcher.matches() && matcher.group(i + 1) != null) {
+//                if (clazz.IS)
+            }
+
+        }
+
+
+        /*
+
+
         if (!CollectionUtils.isEmpty(requestTypes) && requestTypes.size() == 2 && requestTypes.contains(HttpServletRequest.class) && requestTypes.contains(HttpServletResponse.class)) {
             params.add(request);
             params.add(response);
@@ -61,7 +92,7 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
         if (!CollectionUtils.isEmpty(requestTypes) && requestTypes.size() == 1 && requestTypes.contains(HttpServletResponse.class)) {
             params.add(response);
         }
-        //TODO 20160913(目前第一个快速验证的版本,只支持使用HttpServletRequest和HttpServletResponse来作为方法参数)
+*/
         /*Enumeration<String> requestNames = request.getParameterNames();
         while (requestNames.hasMoreElements()) {
             String name = requestNames.nextElement();

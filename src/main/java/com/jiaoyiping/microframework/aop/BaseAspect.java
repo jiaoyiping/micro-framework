@@ -11,10 +11,13 @@ package com.jiaoyiping.microframework.aop;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
 public abstract class BaseAspect implements MethodInterceptor {
+    private static Logger logger = LoggerFactory.getLogger(MethodInterceptor.class);
 
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> cls) {
@@ -23,9 +26,17 @@ public abstract class BaseAspect implements MethodInterceptor {
 
     @Override
     public Object intercept(Object proxy, Method methodTarget, Object[] args, MethodProxy methodProxy) throws Throwable {
+        if (logger.isDebugEnabled()) {
+            logger.debug("");
+        }
         return advice(new Pointcut(methodTarget, methodProxy), proxy, args);
     }
 
+    /*public final Object advice(Pointcut pointcut, Object proxy, Object[] args) {
+
+
+        return null;
+    }*/
     protected abstract Object advice(Pointcut pointcut, Object proxy, Object[] args);
 
     protected class Pointcut {
@@ -56,4 +67,13 @@ public abstract class BaseAspect implements MethodInterceptor {
             return result;
         }
     }
+
+    protected void before() {
+
+    }
+
+    protected void after() {
+
+    }
+
 }

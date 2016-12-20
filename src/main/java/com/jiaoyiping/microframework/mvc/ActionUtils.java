@@ -21,7 +21,6 @@ import java.util.Map;
 
 public class ActionUtils {
     private static Map<RequestInfo, RequestHandler> requestMap = new LinkedHashMap<>();
-    //目前为new,之后改写为IOC
 
     //获取类路径下所有的Controller注解,并解析
     static {
@@ -50,15 +49,14 @@ public class ActionUtils {
         }
         if (actionMethod.isAnnotationPresent(RequestMapping.class)) {
             RequestMapping annotation = actionMethod.getAnnotation(RequestMapping.class);
-            String path = basePath + annotation.value();
+            String requestMappingPath = annotation.value();
+            String path = basePath + requestMappingPath;
             String method = annotation.method().name();
-            actionMap.put(new RequestInfo(method, path), new RequestHandler(actionClass, actionMethod));
-            /*if (RequestMethod.GET.toString().equals(method)) {
-                actionMap.put(new RequestInfo(RequestMethod.GET.toString(), path), new RequestHandler(actionClass, actionMethod));
+            if (isRegexPath(requestMappingPath)) {
+                path = path.replaceAll("\\{\\w+\\}", "(\\w+)");
             }
-            if(RequestMethod.POST.toString().equals(method)){
-                actionMap.put(new RequestInfo(RequestMethod.POST.toString(),path))
-            }*/
+            actionMap.put(new RequestInfo(method, path), new RequestHandler(actionClass, actionMethod));
+
 
         }
     }
@@ -67,4 +65,7 @@ public class ActionUtils {
         return requestMap;
     }
 
+    private static boolean isRegexPath(String requestMappingPath) {
+        return requestMappingPath.matches(".+\\{\\w+\\}.*");
+    }
 }

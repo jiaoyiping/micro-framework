@@ -8,6 +8,7 @@ package com.jiaoyiping.microframework.mvc;
   * To change this template use File | Settings | Editor | File and Code Templates
  */
 
+import java.util.Iterator;
 import java.util.Map;
 
 public class DefaultHandlerMapping implements HandlerMapping {
@@ -15,6 +16,17 @@ public class DefaultHandlerMapping implements HandlerMapping {
 
     @Override
     public RequestHandler getHandler(String requestMethod, String requestPath) {
-        return handlerMap.get(new RequestInfo(requestMethod, requestPath));
+        RequestHandler requestHandler = handlerMap.get(new RequestInfo(requestMethod, requestPath));
+        if (requestHandler == null) {
+            Iterator<RequestInfo> requestInfoIterator = handlerMap.keySet().iterator();
+            while (requestInfoIterator.hasNext()) {
+                RequestInfo requestInfo = requestInfoIterator.next();
+                if (requestPath.matches(requestInfo.getRequestPath())) {
+                    requestHandler = handlerMap.get(requestInfo);
+                    break;
+                }
+            }
+        }
+        return requestHandler;
     }
 }

@@ -9,12 +9,12 @@ package com.jiaoyiping.microframework.mvc;
  */
 
 import java.lang.reflect.Method;
-import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RequestHandler {
     private Class<?> actionClass;
     private Method actionMethod;
-    private Matcher requestPathMatcher;
+    private Pattern requestPathPattern;
 
     public RequestHandler(Class<?> actionClass, Method actionMethod) {
         this.actionClass = actionClass;
@@ -30,11 +30,11 @@ public class RequestHandler {
         return actionMethod;
     }
 
-    public Matcher getRequestPathMatcher() {
-        return requestPathMatcher;
+    public Pattern getRequestPathPattern() {
+        return requestPathPattern;
     }
 
-    public void setRequestPathMatcher(Matcher requestPathMatcher) {
-        this.requestPathMatcher = requestPathMatcher;
+    public void setRequestPathPattern(Pattern requestPathPattern) {
+        this.requestPathPattern = requestPathPattern;
     }
 }
