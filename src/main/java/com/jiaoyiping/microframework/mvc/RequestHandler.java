@@ -17,8 +17,13 @@ public class RequestHandler {
     private Pattern requestPathPattern;
 
     public RequestHandler(Class<?> actionClass, Method actionMethod) {
+        this(actionClass, actionMethod, null);
+    }
+
+    public RequestHandler(Class<?> actionClass, Method actionMethod, Pattern requestPathPattern) {
         this.actionClass = actionClass;
         this.actionMethod = actionMethod;
+        this.requestPathPattern = requestPathPattern;
     }
 
 

@@ -11,13 +11,13 @@ package com.jiaoyiping.microframework.mvc;
 import com.jiaoyiping.microframework.core.clazz.ClassHelper;
 import com.jiaoyiping.microframework.mvc.annotations.Controller;
 import com.jiaoyiping.microframework.mvc.annotations.RequestMapping;
-import com.jiaoyiping.microframework.mvc.annotations.RequestMethod;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ActionUtils {
     private static Map<RequestInfo, RequestHandler> requestMap = new LinkedHashMap<>();
@@ -52,10 +52,12 @@ public class ActionUtils {
             String requestMappingPath = annotation.value();
             String path = basePath + requestMappingPath;
             String method = annotation.method().name();
+            RequestHandler requestHandler = new RequestHandler(actionClass, actionMethod);
             if (isRegexPath(requestMappingPath)) {
-                path = path.replaceAll("\\{\\w+\\}", "(\\w+)");
+                path = path.replaceAll("\\{\\w+\\}", "(\\\\w+)");
+                requestHandler.setRequestPathPattern(Pattern.compile(path));
             }
-            actionMap.put(new RequestInfo(method, path), new RequestHandler(actionClass, actionMethod));
+            actionMap.put(new RequestInfo(method, path), requestHandler);
 
 
         }

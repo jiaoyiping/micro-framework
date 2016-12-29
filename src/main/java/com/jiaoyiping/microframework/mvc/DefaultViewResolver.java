@@ -21,7 +21,7 @@ public class DefaultViewResolver implements ViewResolver {
     @Override
     public void resolveView(HttpServletRequest request, HttpServletResponse response, Object actionResult) {
         if (actionResult instanceof View) {
-
+            // TODO: 2016/12/28 没有实现视图解析相关的功能
         } else if (actionResult instanceof Result) {
             Result result = (Result) actionResult;
             if (!result.isSuccess()) {

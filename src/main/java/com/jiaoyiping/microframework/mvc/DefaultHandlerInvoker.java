@@ -9,7 +9,6 @@ package com.jiaoyiping.microframework.mvc;
  */
 
 import com.jiaoyiping.microframework.ioc.BeanHelper;
-import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +25,8 @@ import java.util.regex.Pattern;
 
 //TODO 处理请求参数的映射的实现太简单,使用起来有一些限制,可以参考一下SpringMVC是怎么实现的
 public class DefaultHandlerInvoker implements HandlerInvoker {
+    private static final String HTTPSERVLETREQUEST = "javax.servlet.http.HttpServletRequest";
+    private static final String HTTPSERVLETRESPONSE = "javax.servlet.http.HttpServletResponse";
     Logger logger = LoggerFactory.getLogger(DefaultHandlerInvoker.class);
     private ViewResolver viewResolver = new DefaultViewResolver();
 
@@ -53,7 +54,7 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
 
     /**
      * 填充请求参数列表,为反射调用做准备
-     * TODO 需要参考springMVC的实现方法
+     * TODO 需要参考springMVC的实现方法(参数名称和参数类型交给用户去定义)
      *
      * @param request
      * @param response
@@ -63,22 +64,23 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
     private Collection<Object> getRequestParams(HttpServletRequest request, HttpServletResponse response, RequestHandler requestHandler) {
         Collection<Object> params = new ArrayList();
         List<Class<?>> requestTypes = Arrays.asList(requestHandler.getActionMethod().getParameterTypes());
-        Matcher matcher = requestHandler.getRequestPathPattern().matcher(request.getRequestURI());
+        Pattern pattern = requestHandler.getRequestPathPattern();
+
         for (int i = 0; i < requestTypes.size(); i++) {
             Class<?> clazz = requestTypes.get(i);
-            if ("javax.servlet.http.HttpServletRequest".equals(clazz.getName())) {
+            if (HTTPSERVLETREQUEST.equals(clazz.getName())) {
                 params.add(request);
-            }
-            if ("javax.servlet.http.HttpServletResponse".equals(clazz.getName())) {
+            } else if (HTTPSERVLETRESPONSE.equals(clazz.getName())) {
                 params.add(response);
+            } else if (pattern != null) {
+                Matcher matcher = requestHandler.getRequestPathPattern().matcher(request.getRequestURI());
+                if (matcher.matches() && matcher.group(i + 1) != null) {
+                    params.add(matcher.group(i + 1));
+                }
             }
-            if (matcher.matches() && matcher.group(i + 1) != null) {
-//                if (clazz.IS)
-            }
+
 
         }
-
-
         /*
 
 
