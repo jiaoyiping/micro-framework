@@ -9,6 +9,8 @@ package com.jiaoyiping.microframework.mvc;
  */
 
 import com.jiaoyiping.microframework.ioc.BeanHelper;
+import com.jiaoyiping.microframework.mvc.annotations.ParamType;
+import com.jiaoyiping.microframework.mvc.annotations.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +27,8 @@ import java.util.regex.Pattern;
 
 //TODO 处理请求参数的映射的实现太简单,使用起来有一些限制,可以参考一下SpringMVC是怎么实现的
 public class DefaultHandlerInvoker implements HandlerInvoker {
-    private static final String HTTPSERVLETREQUEST = "javax.servlet.http.HttpServletRequest";
-    private static final String HTTPSERVLETRESPONSE = "javax.servlet.http.HttpServletResponse";
+    private static final String HTTP_SERVLET_REQUEST = "javax.servlet.http.HttpServletRequest";
+    private static final String HTTP_SERVLET_RESPONSE = "javax.servlet.http.HttpServletResponse";
     Logger logger = LoggerFactory.getLogger(DefaultHandlerInvoker.class);
     private ViewResolver viewResolver = new DefaultViewResolver();
 
@@ -55,6 +57,7 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
     /**
      * 填充请求参数列表,为反射调用做准备
      * TODO 需要参考springMVC的实现方法(参数名称和参数类型交给用户去定义)
+     * // TODO: 2017/1/2 需要考虑用问号来传递参数的方式
      *
      * @param request
      * @param response
@@ -65,14 +68,26 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
         Collection<Object> params = new ArrayList();
         List<Class<?>> requestTypes = Arrays.asList(requestHandler.getActionMethod().getParameterTypes());
         Pattern pattern = requestHandler.getRequestPathPattern();
-
         for (int i = 0; i < requestTypes.size(); i++) {
             Class<?> clazz = requestTypes.get(i);
-            if (HTTPSERVLETREQUEST.equals(clazz.getName())) {
+            if (HTTP_SERVLET_REQUEST.equals(clazz.getName())) {
                 params.add(request);
-            } else if (HTTPSERVLETRESPONSE.equals(clazz.getName())) {
+            } else if (HTTP_SERVLET_RESPONSE.equals(clazz.getName())) {
                 params.add(response);
-            } else if (pattern != null) {
+            }
+            // TODO: 2017/1/3 请求参数,肯定会和URL Pattern中的名字相对应
+            else if (clazz.isAnnotationPresent(PathParam.class)) {
+                PathParam annotation = clazz.getAnnotation(PathParam.class);
+                String paramName = annotation.paramName();
+                ParamType paramType = annotation.paramType();
+                if (pattern!=null){
+//                    pattern.m
+                }
+                String value = null;
+
+            }
+            // TODO: 2017/1/3 对象,直接映射
+            else {
                 Matcher matcher = requestHandler.getRequestPathPattern().matcher(request.getRequestURI());
                 if (matcher.matches() && matcher.group(i + 1) != null) {
                     params.add(matcher.group(i + 1));
@@ -81,24 +96,10 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
 
 
         }
-        /*
-
-
-        if (!CollectionUtils.isEmpty(requestTypes) && requestTypes.size() == 2 && requestTypes.contains(HttpServletRequest.class) && requestTypes.contains(HttpServletResponse.class)) {
-            params.add(request);
-            params.add(response);
-        }
-        if (!CollectionUtils.isEmpty(requestTypes) && requestTypes.size() == 1 && requestTypes.contains(HttpServletRequest.class)) {
-            params.add(request);
-        }
-        if (!CollectionUtils.isEmpty(requestTypes) && requestTypes.size() == 1 && requestTypes.contains(HttpServletResponse.class)) {
-            params.add(response);
-        }
-*/
-        /*Enumeration<String> requestNames = request.getParameterNames();
-        while (requestNames.hasMoreElements()) {
-            String name = requestNames.nextElement();
-        }*/
         return params;
+    }
+
+    private Object buildParam(ParamType paramType, String paramValue) {
+        return null;
     }
 }

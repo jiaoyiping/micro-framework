@@ -58,7 +58,7 @@ public class RequestParam implements Serializable {
 
     @Override
     public String toString() {
-        return "RequestParam{" +
+        return "PathParam{" +
                 "paramName='" + paramName + '\'' +
                 ", paramValue=" + paramValue +
                 '}';

@@ -14,12 +14,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 用于将请URL中的值映射为参数值
+ * 用于将请URL路径中的值映射为参数值
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface RequestParam {
-    String name();
+public @interface PathParam {
+    String paramName();
 
     ParamType paramType();
 }

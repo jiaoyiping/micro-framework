@@ -9,9 +9,21 @@ package com.jiaoyiping.microframework.mvc.annotations;
  */
 
 public enum ParamType {
-    INT,
-    STRING,
-    DOUBLE,
-    BOOLEAN,
-    OBJECT
+    INT("int", Integer.class),
+    STRING("string", String.class),
+    DOUBLE("double", Double.class),
+    BOOLEAN("boolean", Boolean.class),
+    OBJECT("object", Object.class);
+
+    ParamType(String typeName, Class clazz) {
+        this.typeName = typeName;
+        this.clazz = clazz;
+    }
+
+    private String typeName;
+    private Class clazz;
+
+    public Class<?> getType() {
+        return this.clazz;
+    }
 }
