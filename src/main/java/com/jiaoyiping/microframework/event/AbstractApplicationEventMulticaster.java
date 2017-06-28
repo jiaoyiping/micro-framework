@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class AbstractApplicationEventMulticaster implements ApplicationEventMulticaster {
-    private static final String LISTENER_TYPE_NAME = "com.jiaoyiping.event.ApplicationListener";
+    private static final String LISTENER_TYPE_NAME = "com.jiaoyiping.microframework.event.ApplicationListener";
     private List<ApplicationListener<?>> listeners = new ArrayList<>();
 
     @Override

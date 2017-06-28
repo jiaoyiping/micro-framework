@@ -46,7 +46,7 @@ public class IOCHelper {
                             try {
                                 field.set(instance, targetInstance);
                             } catch (IllegalAccessException e) {
-                                logger.error("组装B");
+                                logger.error("组装Bean出现异常...");
                                 logger.error(e.getLocalizedMessage(),e);
                                 e.printStackTrace();
                             }

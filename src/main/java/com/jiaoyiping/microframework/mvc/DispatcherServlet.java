@@ -39,6 +39,7 @@ public class DispatcherServlet extends HttpServlet {
         //                 2.向主页的重定向问题
         //                 3.用户自定义400,404和500页面
         //                 4.如何分离对静态资源的请求
+        //                 5.path中文乱码的问题
 
         if (CONTEXT_BASE.equals(path)) {
            // req.getRequestDispatcher(CONTEXT_BASE).forward(req, resp);

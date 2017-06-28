@@ -8,9 +8,14 @@ package com.jiaoyiping.microframework.event;
   * To change this template use File | Settings | Editor | File and Code Templates
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.Executor;
 
 public class SimpleApplicationEventMulticaster extends AbstractApplicationEventMulticaster {
+    private static Logger logger = LoggerFactory.getLogger(SimpleApplicationEventMulticaster.class);
+
     public Executor getTaskExecutor() {
         return taskExecutor;
     }
@@ -38,6 +43,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 
     /**
      * 注意:当找到的Listener所持有的泛型和Event的类型不一致的时候,将会抛出异常
+     * // FIXME: 2017/6/26 这里只是吞掉了异常，并没有抛出，要考虑是否抛出
      *
      * @param listener
      * @param event
@@ -46,7 +52,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
         try {
             listener.onApplicationEvent(event);
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            logger.error(e.getLocalizedMessage(),e);
         }
     }
 }

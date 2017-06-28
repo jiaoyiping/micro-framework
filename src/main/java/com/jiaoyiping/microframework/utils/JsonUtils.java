@@ -37,7 +37,7 @@ public class JsonUtils {
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
         objectMapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        objectMapper.setFilters(new SimpleFilterProvider().setFailOnUnknownId(false));
+        objectMapper.setFilterProvider(new SimpleFilterProvider().setFailOnUnknownId(false));
         objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
     }
 
