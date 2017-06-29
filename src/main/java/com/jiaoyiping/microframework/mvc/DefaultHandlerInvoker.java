@@ -16,8 +16,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +31,7 @@ import java.util.regex.Pattern;
 public class DefaultHandlerInvoker implements HandlerInvoker {
     private static final String HTTP_SERVLET_REQUEST = "javax.servlet.http.HttpServletRequest";
     private static final String HTTP_SERVLET_RESPONSE = "javax.servlet.http.HttpServletResponse";
+    private static final String DEFAULT_ENCODING = "UTF-8";
     Logger logger = LoggerFactory.getLogger(DefaultHandlerInvoker.class);
     private ViewResolver viewResolver = new DefaultViewResolver();
 
@@ -80,7 +83,7 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
                 PathParam annotation = clazz.getAnnotation(PathParam.class);
                 String paramName = annotation.paramName();
                 ParamType paramType = annotation.paramType();
-                if (pattern!=null){
+                if (pattern != null) {
 //                    pattern.m
                 }
                 String value = null;
@@ -88,7 +91,12 @@ public class DefaultHandlerInvoker implements HandlerInvoker {
             }
             // TODO: 2017/1/3 对象,直接映射
             else {
-                Matcher matcher = requestHandler.getRequestPathPattern().matcher(request.getRequestURI());
+                Matcher matcher = null;
+                try {
+                    matcher = requestHandler.getRequestPathPattern().matcher(URLDecoder.decode(request.getRequestURI(), DEFAULT_ENCODING));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 if (matcher.matches() && matcher.group(i + 1) != null) {
                     params.add(matcher.group(i + 1));
                 }

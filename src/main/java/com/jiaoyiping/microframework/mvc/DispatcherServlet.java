@@ -30,6 +30,7 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding(DEFAULT_ENCODING);
+        resp.setCharacterEncoding(DEFAULT_ENCODING);
         String requestMethod = req.getMethod();
         String path = req.getPathInfo();
         logger.debug("request:{},{}", requestMethod, path);

@@ -54,7 +54,7 @@ public class ActionUtils {
             String method = annotation.method().name();
             RequestHandler requestHandler = new RequestHandler(actionClass, actionMethod);
             if (isRegexPath(requestMappingPath)) {
-                path = path.replaceAll("\\{\\w+\\}", "(\\\\w+)");
+                path = path.replaceAll("\\{\\w+\\}", "([\\\\s\\\\S]+?)");
                 requestHandler.setRequestPathPattern(Pattern.compile(path));
             }
             actionMap.put(new RequestInfo(method, path), requestHandler);
